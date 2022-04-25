@@ -4,7 +4,12 @@
 \alias{newPowerRelation}
 \title{New Power Relation}
 \usage{
-newPowerRelation(..., rankingCoalitions = list(), rankingComparators = c())
+newPowerRelation(
+  ...,
+  rankingCoalitions = list(),
+  rankingComparators = c(),
+  equivalenceClasses = list()
+)
 }
 \arguments{
 \item{...}{Coalition vector, comparison character (\code{">"} or \code{"~"}), coalition vector, comparison character, coalition vector, ...}
@@ -14,6 +19,8 @@ newPowerRelation(..., rankingCoalitions = list(), rankingComparators = c())
 
 \item{rankingComparators}{Vector of \code{">"} or \code{"~"} characters. If \code{rankingCoalitions} list is empty, it is ignored. If
 vector is empty, it uses the \code{">"} relation by default.}
+
+\item{equivalenceClasses}{Nested list of coalition vectors that are indifferent to another. If empty, it is ignored.}
 }
 \value{
 \code{PowerRelation} object containing vector of elements or players \verb{$elements}, an ordered list of
@@ -37,8 +44,8 @@ A coalition is a \link[base:c]{vector} or a \code{\link[sets:set]{sets::set()}}.
 
 
 Let \mjeqn{N = \lbrace 1, ..., n \rbrace}{N = \{1, ..., n\}} be a finite set of
-\emph{elements} (sometimes also called players). \mjseqn{2^N}
-describes the powerset of \mjseqn{N}, or the set of all subsets, also \emph{coalitions}.
+\emph{elements} (sometimes also called players). \mjeqn{2^N}{2^N}
+describes the powerset of \mjeqn{N}{N}, or the set of all subsets, also \emph{coalitions}.
 
 Let \mjeqn{\mathcal{P} \subseteq 2^N}{P \\subseteq 2^N} be a collection of coalitions. A
 \emph{power relation} on \mjeqn{\mathcal{P}}{P} is a total preorder
@@ -99,6 +106,17 @@ newPowerRelation(rankingCoalitions = createPowerset(1:3))
 
 # 123 > (12 ~ 13) > (23 ~ 1) > (2 ~ 3) > {}
 newPowerRelation(rankingCoalitions = createPowerset(1:3), rankingComparators = c(">", "~"))
+
+# using equivalenceClasses parameter
+# (12 ~ 13 ~ 123) > (1 ~ 3 ~ {}) > (2 ~ 23)
+pr <- newPowerRelation(equivalenceClasses = list(
+  list(c(1,2), c(1,3), c(1,2,3)),
+  list(1, 3, c()),
+  list(2, c(2,3))
+))
+# and manipulating the order of the equivalence classes
+# (1 ~ 3 ~ {}) > (2 ~ 23) > (12 ~ 13 ~ 123)
+newPowerRelation(equivalenceClasses = pr$equivalenceClasses[c(2,3,1)])
 
 
 # It's discouraged to directly change the ordering of a power relation inside a

@@ -4,6 +4,12 @@
 # `socialranking`
 
 <!-- badges: start -->
+
+[![R-CMD-check](https://github.com/jassler/socialranking/workflows/R-CMD-check/badge.svg)](https://github.com/jassler/socialranking/actions)
+[![Codecov test
+coverage](https://codecov.io/gh/jassler/socialranking/branch/main/graph/badge.svg)](https://app.codecov.io/gh/jassler/socialranking?branch=main)
+[![CRAN
+status](https://www.r-pkg.org/badges/version/socialranking)](https://CRAN.R-project.org/package=socialranking)
 <!-- badges: end -->
 
 The package `socialranking` offers functions to represent ordinal
@@ -12,14 +18,15 @@ elements or players.
 
 ## Installation
 
-Install the package directly from CRAN with:
+Install the package directly from
+[CRAN](https://cran.r-project.org/package=socialranking) with:
 
 ``` r
 install.packages("socialranking")
 ```
 
 You can also install the development version of socialranking from
-[GitHub](https://github.com/) with:
+[GitHub](https://github.com/jassler/socialranking) with:
 
 ``` r
 # install.packages("devtools")

@@ -42,3 +42,8 @@ tryCatch(
 )
 
 }
+\seealso{
+Other equivalence class lookup functions: 
+\code{\link{equivalenceClassIndex}()}
+}
+\concept{equivalence class lookup functions}

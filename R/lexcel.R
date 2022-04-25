@@ -2,7 +2,7 @@
 `[.LexcelScores` <- function(x, i, ...) structure(unclass(x)[i], class = 'LexcelScores')
 
 #' @export
-`==.LexcelScores` <- function(a, b) {identical(a, b)}
+`==.LexcelScores` <- function(a, b) {identical(a[[1]], b[[1]])}
 
 #' @export
 `>.LexcelScores` <- function(a, b) {
@@ -125,8 +125,7 @@ lexcelScores <- function(powerRelation, elements = NULL) {
 lexcelRanking <- function(powerRelation) {
   doRanking(
     powerRelation,
-    lexcelScores(powerRelation),
-    isIndifferent = function(a, b) identical(a, b)
+    lexcelScores(powerRelation)
   )
 }
 
@@ -160,7 +159,6 @@ lexcelRanking <- function(powerRelation) {
 dualLexcelRanking <- function(powerRelation) {
   doRanking(
     powerRelation,
-    structure(lapply(lexcelScores(powerRelation), function(r) -rev(r)), class = 'LexcelScores'),
-    isIndifferent = function(a, b) identical(a, b)
+    structure(lapply(lexcelScores(powerRelation), function(r) -rev(r)), class = 'LexcelScores')
   )
 }

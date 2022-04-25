@@ -1,6 +1,6 @@
 Package: socialranking
 Title: Social Ranking Solutions for Power Relations on Coalitions
-Version: 0.1.0
+Version: 0.1.1
 Authors@R: c(
  person("Felix", "Fritz", email = "felix.fritz@hs-kempten.de", role = c("aut", "cre")),
  person("Jochen", "Staudacher", role = c("aut", "cph", "ths"), email = "jochen.staudacher@hs-kempten.de"),
@@ -11,16 +11,17 @@ License: GPL-3
 Encoding: UTF-8
 RoxygenNote: 7.1.2
 RdMacros: mathjaxr, Rdpack
-Suggests: clipr (>= 0.8.0), testthat (>= 3.1.2), kableExtra, knitr,
-        rmarkdown
+Suggests: clipr (>= 0.8.0), testthat (>= 3.1.2), xfun (>= 0.30.0),
+        knitr (>= 1.38.0), rmarkdown (>= 2.13.0), covr (>= 3.5.1)
 Imports: relations (>= 0.6.12), sets (>= 1.0.21), rlang (>= 1.0.2),
         mathjaxr (>= 1.6.0), Rdpack (>= 2.3)
 Config/testthat/edition: 3
 VignetteBuilder: knitr
+URL: https://jassler.github.io/socialranking/
 NeedsCompilation: no
-Packaged: 2022-03-30 07:51:31 UTC; felixfritz
+Packaged: 2022-04-25 06:27:49 UTC; felixfritz
 Author: Felix Fritz [aut, cre],
   Jochen Staudacher [aut, cph, ths],
   Moretti Stefano [aut, cph, ths]
 Repository: CRAN
-Date/Publication: 2022-03-30 17:50:05 UTC
+Date/Publication: 2022-04-25 07:00:02 UTC

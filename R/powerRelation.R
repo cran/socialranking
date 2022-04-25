@@ -27,6 +27,22 @@ PowerRelation.default <- function(x, ...) {
   stop('Use newPowerRelation() or newPowerRelationFromString() to create a PowerRelation object.')
 }
 
+#' @export
+`==.PowerRelation` <- function(a, b) {
+  if(length(a$equivalenceClasses) != length(b$equivalenceClasses))
+    return(FALSE)
+
+  for(i in seq_along(a$equivalenceClasses)) {
+    if(length(a$equivalenceClasses[[i]]) != length(b$equivalenceClasses[[i]]))
+      return(FALSE)
+    for(cl in a$equivalenceClasses[[i]]) {
+      if(all(cl != b$equivalenceClasses[[i]]))
+        return(FALSE)
+    }
+  }
+  return(TRUE)
+}
+
 
 #' New Power Relation
 #'
@@ -44,8 +60,8 @@ PowerRelation.default <- function(x, ...) {
 #' @section Mathematical background:
 #'
 #' Let \mjeqn{N = \lbrace 1, ..., n \rbrace}{N = \{1, ..., n\}} be a finite set of
-#' *elements* (sometimes also called players). \mjseqn{2^N}
-#' describes the powerset of \mjseqn{N}, or the set of all subsets, also *coalitions*.
+#' *elements* (sometimes also called players). \mjeqn{2^N}{2^N}
+#' describes the powerset of \mjeqn{N}{N}, or the set of all subsets, also *coalitions*.
 #'
 #' Let \mjeqn{\mathcal{P} \subseteq 2^N}{P \\subseteq 2^N} be a collection of coalitions. A
 #' *power relation* on \mjeqn{\mathcal{P}}{P} is a total preorder
@@ -65,6 +81,8 @@ PowerRelation.default <- function(x, ...) {
 #' `$rankingCoalitions` list from a `PowerRelation` object.
 #' @param rankingComparators Vector of `">"` or `"~"` characters. If `rankingCoalitions` list is empty, it is ignored. If
 #' vector is empty, it uses the `">"` relation by default.
+#' @param equivalenceClasses Nested list of coalition vectors that are indifferent to another. If empty, it is ignored.
+#'
 #'
 #' @template return/PowerRelation
 #'
@@ -121,6 +139,17 @@ PowerRelation.default <- function(x, ...) {
 #' # 123 > (12 ~ 13) > (23 ~ 1) > (2 ~ 3) > {}
 #' newPowerRelation(rankingCoalitions = createPowerset(1:3), rankingComparators = c(">", "~"))
 #'
+#' # using equivalenceClasses parameter
+#' # (12 ~ 13 ~ 123) > (1 ~ 3 ~ {}) > (2 ~ 23)
+#' pr <- newPowerRelation(equivalenceClasses = list(
+#'   list(c(1,2), c(1,3), c(1,2,3)),
+#'   list(1, 3, c()),
+#'   list(2, c(2,3))
+#' ))
+#' # and manipulating the order of the equivalence classes
+#' # (1 ~ 3 ~ {}) > (2 ~ 23) > (12 ~ 13 ~ 123)
+#' newPowerRelation(equivalenceClasses = pr$equivalenceClasses[c(2,3,1)])
+#'
 #'
 #' # It's discouraged to directly change the ordering of a power relation inside a
 #' # PowerRelation object. Instead extract rankingCoalitions, rearrange the list
@@ -134,7 +163,7 @@ PowerRelation.default <- function(x, ...) {
 #' newPowerRelation(rankingCoalitions = newOrdering)
 #'
 #' @export
-newPowerRelation <- function(..., rankingCoalitions = list(), rankingComparators = c()) {
+newPowerRelation <- function(..., rankingCoalitions = list(), rankingComparators = c(), equivalenceClasses = list()) {
   ranking <- if(length(rankingCoalitions) > 1) {
     if(length(rankingComparators) == 0)
       rankingComparators <- '>'
@@ -146,6 +175,21 @@ newPowerRelation <- function(..., rankingCoalitions = list(), rankingComparators
       l[i*2+1] <- list(rankingCoalitions[[i+1]])
     }
     l
+  } else if(length(equivalenceClasses) > 0) {
+    l <- list()
+    for(eq in equivalenceClasses) {
+      first <- TRUE
+      for(coal in eq) {
+        if(first) {
+          first <- FALSE
+        } else {
+          l[[length(l)+1]] <- '~'
+        }
+        l[length(l)+1] <- list(coal)
+      }
+      l[[length(l)+1]] <- '>'
+    }
+    l[-length(l)]
   } else if(...length() == 1 && is.list(..1)) {
     ranking <- ..1
   } else {
@@ -264,7 +308,7 @@ newPowerRelationFromString <- function(string, elementNames = '[0-9a-zA-Z]', asW
 
   coals[length(coals)+1] <- list(asWhat(coalition))
 
-  if(identical(asWhat, identity) && class(unlist(coals)) == 'character' && all(grepl("^[0-9]+$", unlist(coals)))) {
+  if(identical(asWhat, identity) && is.character(unlist(coals)) && all(grepl("^[0-9]+$", unlist(coals)))) {
     coals <- lapply(coals, as.numeric)
     message('Note: Called as.numeric on all elements.\nIf you wanted the elements to be represented as characters instead, call newPowerRelationFromString again and set asWhat = as.character')
   }
@@ -289,6 +333,8 @@ newPowerRelationFromString <- function(string, elementNames = '[0-9a-zA-Z]', asW
 #'
 #' @return Logical value `TRUE` if `c1` and `c2` are in the same equivalence class, else `FALSE`.
 #'
+#' @family equivalence class lookup functions
+#'
 #' @examples
 #' pr <- newPowerRelation(c(1,2), ">", c(1), "~", c(2))
 #'
@@ -312,13 +358,15 @@ coalitionsAreIndifferent <- function(powerRelation, c1, c2) {
 #' Get index of equivalence class containing a coalition
 #'
 #' Given a `coalition` [vector][base::c()] or [sets::set()],
-#' return the index of the equivalence class it is located in.
+#' return a singular index number of the equivalence class it is located in.
 #'
 #' @template param/powerRelation
 #' @param coalition a coalition vector or [`sets::set`] that is part of `powerRelation`
 #' @template param/stopIfNotExists
 #'
 #' @return Numeric value, equivalence class index where `coalition` appears in.
+#'
+#' @family equivalence class lookup functions
 #'
 #' @examples
 #' pr <- newPowerRelation(c(1,2), ">", c(1), "~", c(2))
@@ -348,14 +396,16 @@ equivalenceClassIndex <- function(powerRelation, coalition, stopIfNotExists = TR
   # --- end checks --- #
 
   coalition <- sets::as.set(coalition)
-  for(i in 1:length(powerRelation$equivalenceClasses)) {
-    if(any(sapply(powerRelation$equivalenceClasses[[i]], '==', x = coalition)))
-      return(i)
-  }
-  if(stopIfNotExists)
-    stop(paste0('The coalition {', paste(coalition, collapse = ', '), '} does not appear in the power relation'))
-  else
+  i <- which(sapply(powerRelation$equivalenceClasses, function(eq) {
+    any(coalition == eq)
+  }))
+  if(length(i) == 0) {
+    if(stopIfNotExists)
+      stop(paste0('The coalition {', paste(coalition, collapse = ', '), '} does not appear in the power relation'))
     return(-1)
+  } else {
+    return(i)
+  }
 }
 
 #' @rdname PowerRelation
@@ -390,4 +440,5 @@ print.PowerRelation <- function(x, ...) {
   ))
 
   cat(eClasses, sep = ' > ')
+  cat('\n')
 }

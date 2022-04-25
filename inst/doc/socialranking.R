@@ -1,27 +1,4 @@
 ## ----echo=FALSE---------------------------------------------------------------
-library(kableExtra)
-functionTable <- data.frame(
-  "Comparison functions" = c("`dominates()`", "`cumulativelyDominates()`", "`cpMajorityComparison()`\n`cpMajorityComparisonScore()`", "", ""),
-  "Score functions" = c("", "`cumulativeScores()`", "`copelandScores()`\n`kramerSimpsonScores()`", "`lexcelScores()`", "`ordinalBanzhafScores()`"),
-  "Ranking functions" = c("", "", "`copelandRanking()`\n`kramerSimpsonRanking()`", "`lexcelRanking()`\n`dualLexcelRanking()`", "`ordinalBanzhafRanking()`")
-)
-
-if(knitr::is_latex_output()) {
-  for(i in 1:nrow(functionTable)) {
-    for(j in 1:ncol(functionTable)) {
-      if(grepl("\n", functionTable[i,j]))
-        functionTable[i,j] <- kableExtra::linebreak(functionTable[i,j])
-    }
-  }
-} else {
-  for(i in 1:nrow(functionTable)) {
-    for(j in 1:ncol(functionTable)) {
-      if(grepl("\n", functionTable[i,j]))
-        functionTable[i,j] <- gsub("\n", "<br>", functionTable[i,j])
-    }
-  }
-}
-
 # setup for tex documents
 # remove ## in front of output
 # adjust spacing before and after code chunks
@@ -112,13 +89,11 @@ newPowerRelationFromString("ab > a ~ {} > b")
 
 newPowerRelationFromString("12 > 1 ~ {} > 2", asWhat = as.numeric)
 
-## ----echo=FALSE---------------------------------------------------------------
-kableExtra::kbl(
-  if(knitr::is_latex_output()) apply(functionTable, 1:2, function(x) gsub("`([^`]*)`", "\\\\small{\\\\texttt{\\1}}", x))
-  else functionTable,
-  col.names = c("Comparison Functions", "Score Functions", "Ranking Solutions"),
-  escape = FALSE, booktabs = TRUE
-) %>% kableExtra::kable_styling(bootstrap_options = c("hover")) %>% kableExtra::row_spec(1:(nrow(functionTable)-1), hline_after = TRUE)
+## ---- echo=FALSE, results='asis'----------------------------------------------
+xfun::file_string("tables/functionTable.html")
+
+## ---- echo=FALSE, results='asis'----------------------------------------------
+xfun::file_string("tables/functionTable.tex")
 
 ## -----------------------------------------------------------------------------
 pr <- newPowerRelationFromString("ab > ac ~ bc > a ~ c > {} > b")
@@ -169,25 +144,11 @@ class(prLong)
 class(pr) <- class(pr)[-which(class(pr) == "SingleCharElements")]
 pr
 
-## ----echo=FALSE---------------------------------------------------------------
-df <- data.frame(
-    c("`elements`", "`rankingCoalitions`", "`equivalenceClasses`"),
-    c("Sorted vector of elements", "Coalitions in power relation", "List containing lists, each\ncontaining coalitions in the\nsame equivalence class"),
-    c("`c(1,2)`", "`list(set(1,2),set(2),set(),set(1))`", "`list(list(set(1,2)),`\n\\phantom{list(}`list(set(2), set()),`\n\\phantom{list(}`list(set(1)))`")
-)
+## ---- echo=FALSE, results='asis'----------------------------------------------
+xfun::file_string('tables/prObject.html')
 
-if(knitr::is_latex_output()) {
-  df[3,2] <- kableExtra::linebreak(df[3,2])
-  df[3,3] <- kableExtra::linebreak(df[3,3])
-} else {
-  df[3,2] <- gsub("\n", "<br>", df[3,2])
-  df[3,3] <- gsub("\n", "<br>", df[3,3])
-}
-kableExtra::kbl(
-  if(knitr::is_latex_output()) apply(df, 1:2, function(x) gsub("`([^`]*)`", "\\\\small{\\\\texttt{\\1}}", x))
-  else df,
-  col.names = c("Attribute", "Description", "Value in `pr`"), escape = FALSE, booktabs = TRUE
-) %>% kableExtra::kable_styling(bootstrap_options = "hover", latex_options = c("scale_down")) %>% kableExtra::row_spec(1:(nrow(df)-1), hline_after = TRUE)
+## ---- echo=FALSE, results='asis'----------------------------------------------
+xfun::file_string('tables/prObject.tex')
 
 ## -----------------------------------------------------------------------------
 prAtts <- newPowerRelation(c(2,2,1,1,2), ">", c(1,1,1), "~", c())
