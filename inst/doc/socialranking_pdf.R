@@ -90,7 +90,7 @@ newPowerRelationFromString("ab > a ~ {} > b")
 newPowerRelationFromString("12 > 1 ~ {} > 2", asWhat = as.numeric)
 
 ## ---- echo=FALSE, results='asis'----------------------------------------------
-xfun::file_string("tables/functionTable.html")
+xfun::file_string("tables/functionTable.tex")
 
 ## -----------------------------------------------------------------------------
 pr <- newPowerRelationFromString("ab > ac ~ bc > a ~ c > {} > b")
@@ -142,7 +142,7 @@ class(pr) <- class(pr)[-which(class(pr) == "SingleCharElements")]
 pr
 
 ## ---- echo=FALSE, results='asis'----------------------------------------------
-xfun::file_string('tables/prObject.html')
+xfun::file_string('tables/prObject.tex')
 
 ## -----------------------------------------------------------------------------
 prAtts <- newPowerRelation(c(2,2,1,1,2), ">", c(1,1,1), "~", c())

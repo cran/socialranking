@@ -1,10 +1,8 @@
-# socialranking 0.1.1
+# socialranking 0.1.2 (2022-10-11)
 
-* Added parameter `equivalenceClasses` to `newPowerRelation()`
-* Removed kableExtra from Suggests
-* Fix `equivalenceClassIndex()` takes cycles into account
-* Fix lexcel equals operator
+* Changed maintainer's email address
 
-# socialranking 0.1.0 (2022-03-28)
 
-* Initial release
+# socialranking 0.1.1 (2022-04-25)
+
+ * Added parameter `equivalenceClasses` to `newPowerRelation()`

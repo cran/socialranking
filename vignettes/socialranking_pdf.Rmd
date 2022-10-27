@@ -6,17 +6,6 @@ author: |
 title: "`socialranking`: A package for evaluating ordinal power relations in cooperative game theory"
 date: "`r Sys.Date()`"
 output:
-  rmarkdown::html_document:
-    df_print: paged
-    theme: cerulean
-    highlight: haddock
-    css: styles.css
-    number_sections: yes
-    toc: yes
-    toc_depth: 3
-    toc_float:
-      collapsed: false
-      smooth_scroll: true
   rmarkdown::pdf_document:
     toc: yes
     toc_depth: 3
@@ -26,7 +15,7 @@ numbersections: true
 geometry: margin=3.8cm
 papersize: A4
 vignette: >
-  %\VignetteIndexEntry{Using socialranking html}
+  %\VignetteIndexEntry{socialranking vignette pdf}
   %\VignetteEncoding{UTF-8}
   %\VignetteEngine{knitr::rmarkdown}
 bibliography: references.bib
@@ -158,9 +147,9 @@ Functions used to analyze a given `PowerRelation` object can be grouped into thr
 
 Comparison and score functions are often used to evaluate a social ranking solution (see section `r refId("sec:prelim", "on [PowerRelation objects](ID)")` for a formal definition). Listed below are some of the most prominent functions and solutions introduced in the aforementioned papers.
 
-````{=html}
+````{=latex}
 ```{r, echo=FALSE, results='asis'}
-xfun::file_string("tables/functionTable.html")
+xfun::file_string("tables/functionTable.tex")
 ```
 ````
 
@@ -268,9 +257,9 @@ pr
 Internally a `PowerRelation` is a list with four attributes (see table below). Notice that every coalition vector is turned into a `set` object from the `sets` package[@setsPackage].
 
 
-````{=html}
+````{=latex}
 ```{r, echo=FALSE, results='asis'}
-xfun::file_string('tables/prObject.html')
+xfun::file_string('tables/prObject.tex')
 ```
 ````
 
