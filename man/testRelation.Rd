@@ -58,11 +58,11 @@ pr_e1 \%>=duallex\% e2
 pr_e1 \%>duallex\% e2
 }
 \arguments{
-\item{powerRelation}{A \code{PowerRelation} object created by \code{\link[=newPowerRelation]{newPowerRelation()}}}
+\item{powerRelation}{A \code{\link{PowerRelation}} object created by \code{\link[=PowerRelation]{PowerRelation()}} or \code{\link[=as.PowerRelation]{as.PowerRelation()}}}
 
 \item{e1, e2}{Elements in \code{powerRelation$elements}}
 
-\item{pr_e1}{\code{PowerRelation} and \code{e1} element, packed into a list using \code{pr \%:\% e1}}
+\item{pr_e1}{\code{\link{PowerRelation}} and \code{e1} element, packed into a list using \code{pr \%:\% e1}}
 }
 \value{
 \code{testRelation()} and \verb{\%:\%} returns \code{list(powerRelation, e1)}.
@@ -71,7 +71,7 @@ Followed by a \verb{\%>=comparison\%} or \verb{\%>comparison\%} it returns \code
 \code{e1} and \code{e2}.
 }
 \description{
-On a given \code{PowerRelation} object \code{pr}, check if \code{e1} relates to \code{e2} based on the given social ranking solution.
+On a given \code{\link{PowerRelation}} object \code{pr}, check if \code{e1} relates to \code{e2} based on the given social ranking solution.
 }
 \details{
 The function \code{testRelation} is somewhat only used to make the offered comparison operators in the package better discoverable.
@@ -80,9 +80,7 @@ The function \code{testRelation} is somewhat only used to make the offered compa
 comparison operators listed in the usage section.
 }
 \examples{
-pr <- newPowerRelationFromString(
-  "123 > 12 ~ 13 > 3 > 1 ~ 2", asWhat = as.numeric
-)
+pr <- as.PowerRelation("123 > 12 ~ 13 > 3 > 1 ~ 2")
 
 # Dominance
 stopifnot(pr \%:\% 1 \%>=dom\% 2)

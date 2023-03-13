@@ -83,23 +83,25 @@ refDef <- function(def) {
 
 ## -----------------------------------------------------------------------------
 library(socialranking)
-newPowerRelation(c(1,2), ">", 1, "~", c(), ">", 2)
+PowerRelation(list(list(c(1,2)), list(1, c()), list(2)))
 
-newPowerRelationFromString("ab > a ~ {} > b")
+as.PowerRelation("12 > 1 ~ {} > 2")
 
-newPowerRelationFromString("12 > 1 ~ {} > 2", asWhat = as.numeric)
+as.PowerRelation("ab > a ~ {} > b")
+
+as.PowerRelation(list(c(1,2), 1, c(), 2))
+
+as.PowerRelation(list(c(1,2), 1, c(), 2), comparators = c(">", "~", ">"))
 
 ## ---- echo=FALSE, results='asis'----------------------------------------------
 xfun::file_string("tables/functionTable.html")
 
 ## -----------------------------------------------------------------------------
-pr <- newPowerRelationFromString("ab > ac ~ bc > a ~ c > {} > b")
+pr <- as.PowerRelation("ab > abc ~ ac ~ bc > a ~ c > {} > b")
 
-# a dominates b -> TRUE
-dominates(pr, "a", "b")
-
-# b does not dominate a -> FALSE
-dominates(pr, "b", "a")
+# a dominates b, but b does not dominate a
+c(dominates(pr, "a", "b"),
+  dominates(pr, "b", "a"))
 
 # calculate cumulative scores
 scores <- cumulativeScores(pr)
@@ -108,6 +110,7 @@ scores$a
 
 # performing a bunch of rankings
 lexcelRanking(pr)
+L1Ranking(pr)
 dualLexcelRanking(pr)
 copelandRanking(pr)
 kramerSimpsonRanking(pr)
@@ -121,18 +124,24 @@ relations::relation_incidence(rel)
 
 ## -----------------------------------------------------------------------------
 library(socialranking)
-pr <- newPowerRelation(c(1,2), ">", 2, "~", c(), ">", 1)
+pr <- PowerRelation(list(
+  list(c(1,2)),
+  list(2, c()),
+  list(1)
+))
 pr
 
 class(pr)
 
 ## -----------------------------------------------------------------------------
-newPowerRelationFromString("12 > 2~{} > 1", asWhat = as.numeric)
+as.PowerRelation("12 > 2~{} > 1")
 
 ## -----------------------------------------------------------------------------
-prLong <- newPowerRelation(
-  c("Alice", "Bob"), ">", "Bob", "~", c(), ">", "Alice"
-)
+prLong <- PowerRelation(list(
+  list(c("Alice", "Bob")), 
+  list("Bob", c()),
+  list("Alice")
+))
 prLong
 
 class(prLong)
@@ -145,97 +154,127 @@ pr
 xfun::file_string('tables/prObject.html')
 
 ## -----------------------------------------------------------------------------
-prAtts <- newPowerRelation(c(2,2,1,1,2), ">", c(1,1,1), "~", c())
+prAtts <- PowerRelation(list(
+  list(c(2,2,1,1,2)),
+  list(c(2,1), c())
+))
 prAtts
 
 prAtts$elements
 
-prAtts$rankingCoalitions
+prAtts$coalitionLookup(c(1,2))
+prAtts$coalitionLookup(c(2,1))
+prAtts$coalitionLookup(c(2,1,2,1,2))
 
-prAtts$rankingComparators
-
-prAtts$equivalenceClasses
-
-## -----------------------------------------------------------------------------
-equivalenceClassIndex(prAtts, c(2,1))
-
-equivalenceClassIndex(prAtts, 1)
-
-equivalenceClassIndex(prAtts, c())
-
-# are the given coalitions in the same equivalence class?
-coalitionsAreIndifferent(prAtts, 1, c())
-
-coalitionsAreIndifferent(prAtts, 1, c(1,2))
+prAtts$elementLookup(2)
 
 ## -----------------------------------------------------------------------------
+pr <- as.PowerRelation("12 > (1 ~ {}) > 2")
+PowerRelation(pr$eqs[c(2, 3, 1)])
+
+PowerRelation(rev(pr$eqs))
+
+## -----------------------------------------------------------------------------
+coalitions <- unlist(pr$eqs, recursive = FALSE)
+compares <- c(">", "~", ">")
+as.PowerRelation(coalitions[c(2,1,3,4)], comparators = compares)
+
+# notice that the length of comparators does not need to match
+# length(coalitions)-1
+as.PowerRelation(rev(coalitions), comparators = c("~", ">"))
+
+# not setting the comparators parameter turns it into a linear order
+as.PowerRelation(coalitions)
+
+## -----------------------------------------------------------------------------
+pr <- PowerRelation(list(
+  list(c("AT", "DE"), "FR"),
+  list("DE"),
+  list(c("AT", "FR"), "AT")
+))
 pr
 
-# reverse power ranking
-newPowerRelation(
-  rankingCoalitions = rev(pr$rankingCoalitions),
-  rankingComparators = pr$rankingComparators
-)
+# since we have 3 elements, the super set 2^N should include 8 coalitions
+appendMissingCoalitions(pr)
 
 ## -----------------------------------------------------------------------------
-newPowerRelation(rankingCoalitions = rev(pr$rankingCoalitions))
+pr <- as.PowerRelation("a > b > c ~ ac > abc")
+makePowerRelationMonotonic(pr)
 
-## -----------------------------------------------------------------------------
-# if too short -> comparator values are repeated
-newPowerRelation(
-  rankingCoalitions = as.list(1:9),
-  rankingComparators = "~"
-)
+makePowerRelationMonotonic(pr, addMissingCoalitions = FALSE)
 
-newPowerRelation(
-    rankingCoalitions = as.list(letters[1:9]),
-    rankingComparators = c(">", "~", "~")
-)
-
-# if too long -> ignore excessive comparators
-newPowerRelation(
-  rankingCoalitions = pr$rankingCoalitions,
-  rankingComparators = c("~", ">", "~", ">", ">", "~")
-)
+# notice how an empty coalition in some equivalence class
+# causes all remaining coalitions to be moved there
+makePowerRelationMonotonic(as.PowerRelation("ab > c > {} > abc > a > b"))
 
 ## -----------------------------------------------------------------------------
 createPowerset(
   c("a", "b", "c"),
-  writeLines = TRUE,
-  copyToClipboard = FALSE
+  result = "print"
 )
 
 ## -----------------------------------------------------------------------------
 ps <- createPowerset(1:2, includeEmptySet = FALSE)
 ps
 
-newPowerRelation(rankingCoalitions = ps)
+as.PowerRelation(ps)
 
-newPowerRelation(rankingCoalitions = createPowerset(letters[1:4]))
+# equivalent
+PowerRelation(list(ps))
+
+as.PowerRelation(createPowerset(letters[1:4]))
 
 ## -----------------------------------------------------------------------------
-pr <- newPowerRelationFromString("abc > ab ~ ac > bc")
+coalitions <- list(c(1,2), 1, 2)
+gen <- powerRelationGenerator(coalitions)
+while(!is.null(pr <- gen())) {
+  print(pr)
+}
 
-# pr$elements == c("a", "b", "c")
-# we define some arbitrary score vector where "a" scores highest
-# "b" and "c" both score 1, thus they are indifferent
-scores <- c(100, 1, 1)
-doRanking(pr, scores)
+## -----------------------------------------------------------------------------
+gen <- powerRelationGenerator(coalitions, startWithLinearOrder = TRUE)
+while(!is.null(pr <- gen())) {
+  print(pr)
+}
+
+## -----------------------------------------------------------------------------
+gen <- powerRelationGenerator(coalitions)
+# partition 3
+
+gen <- generateNextPartition(gen)
+# partition 2+1
+
+gen <- generateNextPartition(gen)
+# partition 1+2
+gen()
+
+## ----echo=FALSE---------------------------------------------------------------
+stirlingSecond <- function(n, k) {
+  s <- sapply(0:k, function(j) (-1)^j * choose(k, j) * (k - j)^n)
+  sum(s) / factorial(k)
+}
+bellNum <- function(n) sapply(0:n, stirlingSecond, n = n) |> sum()
+preorderNum <- function(x) sapply(0:x, function(k) factorial(k) * stirlingSecond(x,k)) |> sum()
+# for(i in 1:10) writeLines(paste('|', i, '|', bellNum(i), '|', preorderNum(i), '|'))
+
+## -----------------------------------------------------------------------------
+# we define some arbitrary score vector where "a" scores highest.
+# "b" and "c" both score 1, thus they are indifferent.
+scores <- c(a = 100, b = 1, c = 1)
+doRanking(scores)
 
 # we can also tell doRanking to punish higher scores
-doRanking(pr, scores, decreasing = FALSE)
+doRanking(scores, decreasing = FALSE)
 
 ## -----------------------------------------------------------------------------
-scores <- c(0, 20, 21)
-# b and c are considered to be indifferent,
-# because their score difference is less than 2
-doRanking(pr, scores, isIndifferent = function(a,b) abs(a-b) < 2)
+scores <- list(a = c(3, 3, 3), b = c(2, 3, 2), c = c(7, 0, 2))
+doRanking(scores, compare = function(a, b) sum(a) - sum(b))
+# a and c are considered to be indifferent, because their sums are the same
+
+doRanking(scores, compare = function(a,b) sum(a) - sum(b), decreasing = FALSE)
 
 ## -----------------------------------------------------------------------------
-pr <- newPowerRelationFromString(
-  "3 > 1 > 2 > 12 > 13 > 23",
-  asWhat = as.numeric
-)
+pr <- as.PowerRelation("3 > 1 > 2 > 12 > 13 > 23")
 
 # 1 clearly dominates 2
 dominates(pr, 1, 2)
@@ -252,7 +291,7 @@ dominates(pr, 1, 1)
 dominates(pr, 1, 1, strictly = TRUE)
 
 ## -----------------------------------------------------------------------------
-pr <- newPowerRelationFromString("ac > bc ~ b > a ~ abc > ab")
+pr <- as.PowerRelation("ac > bc ~ b > a ~ abc > ab")
 
 # FALSE because ac > bc, whereas b > a
 dominates(pr, "a", "b")
@@ -261,7 +300,7 @@ dominates(pr, "a", "b")
 dominates(pr, "a", "b", includeEmptySet = FALSE)
 
 ## -----------------------------------------------------------------------------
-pr <- newPowerRelationFromString("ab > (ac ~ bc) > (a ~ c) > {} > b")
+pr <- as.PowerRelation("ab > (ac ~ bc) > (a ~ c) > {} > b")
 cumulativeScores(pr)
 
 # for each index k, $a[k] >= $b[k]
@@ -276,7 +315,7 @@ cumulativelyDominates(pr, "b", "c")
 cumulativelyDominates(pr, "c", "b")
 
 ## -----------------------------------------------------------------------------
-pr <- newPowerRelationFromString("ab > (ac ~ bc) > (a ~ c) > {} > b")
+pr <- as.PowerRelation("ab > (ac ~ bc) > (a ~ c) > {} > b")
 cpMajorityComparisonScore(pr, "a", "b")
 
 cpMajorityComparisonScore(pr, "b", "a")
@@ -304,29 +343,27 @@ cpMajorityComparison(pr, "a", "b")
 cpMajorityComparison(pr, "a", "b", strictly = TRUE)
 
 ## -----------------------------------------------------------------------------
-pr <- newPowerRelation(
-  c(1,2),
-  ">", c(1),
-  ">", c(2)
-)
+pr <- as.PowerRelation(list(c(1,2), c(1), c(2)))
+pr
 
 # both players 1 and 2 have an Ordinal Banzhaf Score of 1
 # therefore they are indifferent to one another
+# note that the empty set is missing, as such we cannot compare {}u{i} with {}
 ordinalBanzhafScores(pr)
 
 ordinalBanzhafRanking(pr)
 
-pr <- newPowerRelationFromString("ab > a > {} > b")
+pr <- as.PowerRelation("ab > a > {} > b")
 
 # player b has a negative impact on the empty set
 # -> player b's score is 1 - 1 = 0
 # -> player a's score is 2 - 0 = 2
-sapply(ordinalBanzhafScores(pr), function(score) sum(score))
+sapply(ordinalBanzhafScores(pr), function(score) sum(score[c(1,2)]))
 
 ordinalBanzhafRanking(pr)
 
 ## -----------------------------------------------------------------------------
-pr <- newPowerRelationFromString("(abc ~ ab ~ c ~ a) > (b ~ bc) > ac")
+pr <- as.PowerRelation("(abc ~ ab ~ c ~ a) > (b ~ bc) > ac")
 scores <- copelandScores(pr)
 
 # Based on CP-Majority, a>=b and a>=c (+2), but b>=a (-1)
@@ -337,15 +374,13 @@ sapply(copelandScores(pr), sum)
 copelandRanking(pr)
 
 ## -----------------------------------------------------------------------------
-pr <- newPowerRelationFromString("(abc ~ ab ~ c ~ a) > (b ~ bc) > ac")
+pr <- as.PowerRelation("(abc ~ ab ~ c ~ a) > (b ~ bc) > ac")
 unlist(kramerSimpsonScores(pr))
 
 kramerSimpsonRanking(pr)
 
 ## -----------------------------------------------------------------------------
-pr <- newPowerRelationFromString(
-  "b > (a ~ c) > ab > (ac ~ bc) > {} > abc"
-)
+pr <- as.PowerRelation("b > (a ~ c) > ab > (ac ~ bc) > {} > abc")
 kramerSimpsonRanking(pr)
 
 # notice how b's score is negative
@@ -354,10 +389,7 @@ unlist(kramerSimpsonScores(pr))
 kramerSimpsonScores(pr, elements = "b", compIvsI = TRUE)
 
 ## -----------------------------------------------------------------------------
-pr <- newPowerRelationFromString(
-  "12 > (123 ~ 23 ~ 3) > (1 ~ 2) > 13",
-  asWhat = as.numeric
-)
+pr <- as.PowerRelation("12 > (123 ~ 23 ~ 3) > (1 ~ 2) > 13")
 
 # show the number of times an element appears in each equivalence class
 # e.g. 3 appears 3 times in [[2]] and 1 time in [[4]]
@@ -383,10 +415,7 @@ paste0(names(lexcelCumulated), ": ", lexcelCumulated, collapse = ', ')
 paste0(names(cumulScores), ": ", cumulScores, collapse = ', ')
 
 ## -----------------------------------------------------------------------------
-pr <- newPowerRelationFromString(
-  "12 > (123 ~ 23 ~ 3) > (1 ~ 2) > 13",
-  asWhat = as.numeric
-)
+pr <- as.PowerRelation("12 > (123 ~ 23 ~ 3) > (1 ~ 2) > 13")
 
 lexScores <- lexcelScores(pr)
 
@@ -408,7 +437,7 @@ lexcelRanking(pr)
 dualLexcelRanking(pr)
 
 ## -----------------------------------------------------------------------------
-pr <- newPowerRelationFromString("ab > a > {} > b")
+pr <- as.PowerRelation("ab > a > {} > b")
 rel <- relations::as.relation(pr)
 
 relations::relation_incidence(rel)
@@ -424,7 +453,7 @@ c(
 
 ## -----------------------------------------------------------------------------
 # a power relation where coalitions {1} and {2} are indifferent
-pr <- newPowerRelationFromString("12 > (1 ~ 2)", asWhat = as.numeric)
+pr <- as.PowerRelation("12 > (1 ~ 2)")
 rel <- relations::as.relation(pr)
 
 # we have both binary relations {1}R{2} as well as {2}R{1}
@@ -441,27 +470,24 @@ c(
 )
 
 ## -----------------------------------------------------------------------------
-newPowerRelation(c(1,2), ">", 2, ">", 1, "~", 2, ">", c(1,2))
+as.PowerRelation("12 > 2 > (1 ~ 2) > 12")
 
 ## -----------------------------------------------------------------------------
-pr <- suppressWarnings(newPowerRelation(1, '>', 2, '>', 1))
+pr <- suppressWarnings(as.PowerRelation(list(1, 2, 1)))
 pr
 
 transitiveClosure(pr)
 
 # two cycles, (1>3>1) and (2>23>2)
 pr <- suppressWarnings(
-  newPowerRelationFromString(
-    "1 > 3 > 1 > 2 > 23 > 2",
-    asWhat = as.numeric
-  )
+  as.PowerRelation("1 > 3 > 1 > 2 > 23 > 2")
 )
 
 transitiveClosure(pr)
 
 # overlapping cycles
 pr <- suppressWarnings(
-  newPowerRelationFromString("c > ac > b > ac > (a ~ b) > abc")
+  as.PowerRelation("c > ac > b > ac > (a ~ b) > abc")
 )
 
 transitiveClosure(pr)

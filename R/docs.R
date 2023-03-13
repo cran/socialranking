@@ -3,12 +3,12 @@
 #' The package `socialranking` offers functions to represent ordinal
 #' information of coalitions and calculate the power relation between elements or players.
 #'
-#' [`newPowerRelation()`] creates a `PowerRelation` object. [`createPowerset()`]
-#' is a convenient function to generate a [`newPowerRelation()`] function call
+#' [`PowerRelation()`] creates a [`PowerRelation`] object. [`createPowerset()`]
+#' is a convenient function to generate a [`PowerRelation()`] or [`as.PowerRelation()`] function call
 #' for all possible coalitions.
 #'
 #' The functions used to analyze power relations can be grouped into comparison functions,
-#' score functions and ranking solutions. Ranking solutions produce a `SocialRankingSolution` object.
+#' score functions and ranking solutions. Ranking solutions produce a `SocialRanking` object.
 #'
 #' | Comparison Functions         | Score Functions            | Ranking Solutions           |
 #' |----------------------------  |--------------------------  |-----------------------------|
@@ -18,6 +18,7 @@
 #' |                              | [`kramerSimpsonScores()`]  | [`kramerSimpsonRanking()`]  |
 #' |                              | [`lexcelScores()`]         | [`lexcelRanking()`]         |
 #' |                              |                            | [`dualLexcelRanking()`]     |
+#' |                              | [`L1Scores()`]             | [`L1Ranking()`]             |
 #' |                              | [`ordinalBanzhafScores()`] | [`ordinalBanzhafRanking()`] |
 #'
 #' ^1 [`cpMajorityComparisonScore()`] is a faster alternative to [`cpMajorityComparison()`], but it produces less data.
@@ -30,10 +31,9 @@
 #'
 #' @importFrom Rdpack reprompt
 #' @importFrom relations as.relation
-#' @importFrom mathjaxr preview_rd
 #'
 #' @docType package
-#' @name socialranking
+#' @name socialrankingpackage
 NULL
 #> NULL
 

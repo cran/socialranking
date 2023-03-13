@@ -13,13 +13,13 @@ powerRelationMatrix(
 \method{as.relation}{PowerRelation}(x, ...)
 }
 \arguments{
-\item{powerRelation}{A \code{PowerRelation} object created by \code{\link[=newPowerRelation]{newPowerRelation()}}}
+\item{powerRelation}{A \code{\link{PowerRelation}} object created by \code{\link[=PowerRelation]{PowerRelation()}} or \code{\link[=as.PowerRelation]{as.PowerRelation()}}}
 
 \item{domainNames}{How should the row and column names be formatted?
 \itemize{
 \item \code{pretty}: Coalitions such as c(1,2) are formatted as 12. To ensure that it's correctly sorted alphabetically, every name is preceded by a certain amount of the invisible Unicode character \\u200b
 \item \code{numericPrec}: Coalitions such as c(1,2) are formatted as 1\{12\}, the number in front of the curly brace marking its sorted spot. While less pretty, it won't use Unicode characters.
-\item \code{numeric}: Drop coalition names, only count from 1 upwards. Each number corresponds to the index in \code{powerRelation$rankingCoalitions}
+\item \code{numeric}: Drop coalition names, only count from 1 upwards. Each number corresponds to the index in TODO \code{powerRelation$rankingCoalitions}
 \item \verb{function(x)}: A custom function that is passed a number from \code{1} through \code{length(powerRelation$rankingCoalitions)}. Must return a \code{character} object.
 }}
 
@@ -31,14 +31,13 @@ powerRelationMatrix(
 \code{\link[relations:relation]{relations::relation()}} object to the corresponding power relation.
 }
 \description{
-For a given \code{PowerRelation} object create a \code{\link[relations:relation]{relations::relation()}} object.
+For a given \code{\link{PowerRelation}} object create a \code{\link[relations:relation]{relations::relation()}} object.
 }
 \details{
-\loadmathjax
-Turn a \code{PowerRelation} object into a \code{\link[relations:relation]{relations::relation()}} object. The incidence matrix can be viewed with
+Turn a \code{\link{PowerRelation}} object into a \code{\link[relations:relation]{relations::relation()}} object. The incidence matrix can be viewed with
 \code{\link[relations:incidence]{relations::relation_incidence()}}.
 
-The columns and rows of a \code{PowerRelation} object are ordered by \code{powerRelation$rankingCoalitions}.
+The columns and rows of a \code{\link{PowerRelation}} object are ordered by TODO \code{powerRelation$rankingCoalitions}.
 The \code{relations} package automatically sorts the columns and rows by their domain names, which is the reason the
 parameter \code{domainNames} is included. This way we ensure that the columns and rows are sorted by
 the order of the power relation.
@@ -46,19 +45,19 @@ the order of the power relation.
 \section{Cycles}{
 
 
-A \code{PowerRelation} object is defined as being transitive. If a power relation includes a cycle,
+A \code{\link{PowerRelation}} object is defined as being transitive. If a power relation includes a cycle,
 meaning that the same coalition appears twice in the ranking, all coalitions within that cycle will be considered
 to be indifferent from one another.
 
-For example, given the power relation \mjeqn{1 \succ 2 \succ 3 \succ 1 \succ 12}{1 > 2 > 3 > 1 > 12},
-the relation is somewhat equivalent to \mjeqn{1 \sim 2 \sim 3 \succ 12}{1 ~ 2 ~ 3 > 12}. There is no way
+For example, given the power relation \eqn{1 \succ 2 \succ 3 \succ 1 \succ 12}{1 > 2 > 3 > 1 > 12},
+the relation is somewhat equivalent to \eqn{1 \sim 2 \sim 3 \succ 12}{1 ~ 2 ~ 3 > 12}. There is no way
 to check for cycles in the incidence matrix only.
 
-Call \code{\link[=transitiveClosure]{transitiveClosure()}} to remove cycles in a \code{PowerRelation} object.
+Call \code{\link[=transitiveClosure]{transitiveClosure()}} to remove cycles in a \code{\link{PowerRelation}} object.
 }
 
 \examples{
-pr <- newPowerRelation(c(1,2), ">", 1, ">", 2)
+pr <- as.PowerRelation("12 > 1 > 2")
 relation <- powerRelationMatrix(pr)
 
 # do relation stuff
@@ -80,7 +79,7 @@ stopifnot(all(
 
 
 # a power relation where coalitions {1} and {2} are indifferent
-pr <- newPowerRelation(c(1,2), ">", 1, "~", 2)
+pr <- as.PowerRelation("12 > (1 ~ 2)")
 relation <- powerRelationMatrix(pr)
 
 # Incidence matrix
@@ -104,7 +103,7 @@ stopifnot(all(
 
 
 # a pr with cycles
-pr <- newPowerRelation(c(1,2), ">", 1, ">", 2, ">", 1)
+pr <- suppressWarnings(as.PowerRelation("12 > 1 > 2 > 1"))
 relation <- powerRelationMatrix(pr)
 
 # Incidence matrix
@@ -120,13 +119,13 @@ relation <- powerRelationMatrix(
   function(x) paste0(letters[x], ":", paste(pr$rankingCoalitions[[x]], collapse = "|"))
 )
 
+relations::relation_incidence(relation)
 # Incidences:
 #       a:1|2 b:1 c:2 d:1
 # a:1|2     1   1   1   1
 # b:1       0   1   1   1
 # c:2       0   1   1   1
 # d:1       0   1   1   1
-relations::relation_incidence(relation)
 
 }
 \seealso{

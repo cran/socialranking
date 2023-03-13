@@ -1,13 +1,5 @@
 test_that("manip paper example with empty set", {
-  pr <- newPowerRelation(
-    c(1,2,3),
-    "~", c(1,2),
-    "~", c(3),
-    "~", c(1),
-    ">", c(2),
-    "~", c(2,3),
-    ">", c(1,3)
-  )
+  pr <- as.PowerRelation('(123 ~ 12 ~ 3 ~ 1) > (2 ~ 23) > 13')
 
   result12 <- cpMajorityComparison(pr, 1, 2)
   result13 <- cpMajorityComparison(pr, 1, 3)
@@ -47,11 +39,11 @@ test_that("manip paper example with empty set", {
   expect_length(result23$e1$winningCoalitions, 1)
   expect_length(result23$e2$winningCoalitions, 1)
 
-  expect_equal(result12$e1$winningCoalitions[[1]], sets::set())
-  expect_equal(result12$e2$winningCoalitions[[1]], sets::set(3))
-  expect_equal(result13$e1$winningCoalitions[[1]], sets::set(2))
-  expect_equal(result23$e1$winningCoalitions[[1]], sets::set(1))
-  expect_equal(result23$e2$winningCoalitions[[1]], sets::set())
+  expect_equal(result12$e1$winningCoalitions[[1]], c())
+  expect_equal(result12$e2$winningCoalitions[[1]], c(3))
+  expect_equal(result13$e1$winningCoalitions[[1]], c(2))
+  expect_equal(result23$e1$winningCoalitions[[1]], c(1))
+  expect_equal(result23$e2$winningCoalitions[[1]], c())
 
   expect_equal(result12$e1$score, 1)
   expect_equal(result12$e2$score, 1)
@@ -71,15 +63,7 @@ test_that("manip paper example with empty set", {
 
 
 test_that("manip paper example strictly", {
-  pr <- newPowerRelation(
-    c(1,2,3),
-    "~", c(1,2),
-    "~", c(3),
-    "~", c(1),
-    ">", c(2),
-    "~", c(2,3),
-    ">", c(1,3)
-  )
+  pr <- as.PowerRelation('(123 ~ 12 ~ 3 ~ 1) > (2 ~ 23) > 13')
 
   result12 <- cpMajorityComparison(pr, 1, 2, strictly = TRUE)
   result13 <- cpMajorityComparison(pr, 1, 3, strictly = TRUE)
@@ -106,11 +90,11 @@ test_that("manip paper example strictly", {
   expect_length(result23$e1$winningCoalitions, 1)
   expect_length(result23$e2$winningCoalitions, 1)
 
-  expect_equal(result12$e1$winningCoalitions[[1]], sets::set())
-  expect_equal(result12$e2$winningCoalitions[[1]], sets::set(3))
-  expect_equal(result13$e1$winningCoalitions[[1]], sets::set(2))
-  expect_equal(result23$e1$winningCoalitions[[1]], sets::set(1))
-  expect_equal(result23$e2$winningCoalitions[[1]], sets::set())
+  expect_equal(result12$e1$winningCoalitions[[1]], c())
+  expect_equal(result12$e2$winningCoalitions[[1]], c(3))
+  expect_equal(result13$e1$winningCoalitions[[1]], c(2))
+  expect_equal(result23$e1$winningCoalitions[[1]], c(1))
+  expect_equal(result23$e2$winningCoalitions[[1]], c())
 
   expect_equal(result12$e1$score, 1)
   expect_equal(result12$e2$score, 1)
@@ -129,15 +113,7 @@ test_that("manip paper example strictly", {
 })
 
 test_that("manip paper example without empty set", {
-  pr <- newPowerRelation(
-    c(1,2,3),
-    "~", c(1,2),
-    "~", c(3),
-    "~", c(1),
-    ">", c(2),
-    "~", c(2,3),
-    ">", c(1,3)
-  )
+  pr <- as.PowerRelation('231 ~ 21 ~ 3 ~ 1 > 2 ~ 23 > 13')
 
   result12 <- cpMajorityComparison(pr, 1, 2, includeEmptySet = FALSE)
   result13 <- cpMajorityComparison(pr, 1, 3, includeEmptySet = FALSE)
@@ -164,9 +140,9 @@ test_that("manip paper example without empty set", {
   expect_length(result23$e1$winningCoalitions, 1)
   expect_length(result23$e2$winningCoalitions, 0)
 
-  expect_equal(result12$e2$winningCoalitions[[1]], sets::set(3))
-  expect_equal(result13$e1$winningCoalitions[[1]], sets::set(2))
-  expect_equal(result23$e1$winningCoalitions[[1]], sets::set(1))
+  expect_equal(result12$e2$winningCoalitions[[1]], c(3))
+  expect_equal(result13$e1$winningCoalitions[[1]], c(2))
+  expect_equal(result23$e1$winningCoalitions[[1]], c(1))
 
   expect_equal(result12$e1$score, 0)
   expect_equal(result12$e2$score, 1)
@@ -182,4 +158,32 @@ test_that("manip paper example without empty set", {
   expect_equal(cpMajorityComparisonScore(pr, 3, 1, includeEmptySet = FALSE), c(result13$e2$score, -result13$e1$score))
   expect_equal(cpMajorityComparisonScore(pr, 2, 3, includeEmptySet = FALSE), c(result23$e1$score, -result23$e2$score))
   expect_equal(cpMajorityComparisonScore(pr, 3, 2, includeEmptySet = FALSE), c(result23$e2$score, -result23$e1$score))
+})
+
+test_that("output", {
+  pr <- as.PowerRelation('1 > {} > 2 > 3 > (123 ~ 12 ~ 13 ~ 23)')
+  result <- evaluate_promise(cpMajorityComparison(pr, 1, 2), print = TRUE)
+  expect_equal(result$output, '1 > 2
+D_12 = {3, {}}
+D_21 = {3}
+Score of 1 = 2
+Score of 2 = 1')
+
+  pr <- as.PowerRelation('1 > {} > 2 > 23 > 3 > 13 > 123 > 12')
+  result <- evaluate_promise(cpMajorityComparison(pr, 1, 2), print = TRUE)
+  expect_equal(result$output, '1 ~ 2
+D_12 = {{}}
+D_21 = {3}
+Score of 1 = 1
+Score of 2 = 1')
+
+  pr <- as.PowerRelation(
+    list("Apple", c("Apple", "Banana"), c("Apple", "Citrus"), c(), c("Apple", "Banana", "Citrus"), c("Citrus", "Banana"), "Citrus", "Banana")
+  )
+  result <- evaluate_promise(cpMajorityComparison(pr, "Apple", "Banana"), print = TRUE)
+  expect_equal(result$output, 'Apple > Banana
+D_Apple,Banana = {{Citrus}, {}}
+D_Banana,Apple = {}
+Score of Apple = 2
+Score of Banana = 0')
 })

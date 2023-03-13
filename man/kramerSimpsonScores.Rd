@@ -5,74 +5,68 @@
 \alias{kramerSimpsonRanking}
 \title{Kramer-Simpson-like method}
 \usage{
-kramerSimpsonScores(powerRelation, elements = NULL, compIvsI = FALSE)
+kramerSimpsonScores(
+  powerRelation,
+  elements = powerRelation$elements,
+  compIvsI = FALSE
+)
 
 kramerSimpsonRanking(powerRelation, compIvsI = FALSE)
 }
 \arguments{
-\item{powerRelation}{A \code{PowerRelation} object created by \code{\link[=newPowerRelation]{newPowerRelation()}}}
+\item{powerRelation}{A \code{\link{PowerRelation}} object created by \code{\link[=PowerRelation]{PowerRelation()}} or \code{\link[=as.PowerRelation]{as.PowerRelation()}}}
 
-\item{elements}{vector of elements of which to calculate their scores.
-If \code{elements == NULL}, create vectors for all elements in \code{pr$elements}}
+\item{elements}{Vector of elements of which to calculate their scores.
+By default, the scores of all elements in \code{powerRelation$elements} are considered.}
 
-\item{compIvsI}{If \code{TRUE}, include CP-Majority comparison \mjeqn{d_{ii}(\succeq)}{d_ii(>=)}, or, the CP-Majority
+\item{compIvsI}{If \code{TRUE}, include CP-Majority comparison \eqn{d_{ii}(\succeq)}{d_ii(>=)}, or, the CP-Majority
 comparison score of an element against itself, which is always 0.}
 }
 \value{
 Score function returns a list of type \code{KramerSimpsonScores} and length of \code{powerRelation$elements}
 (unless parameter \code{elements} is specified). Lower scoring elements are ranked higher.
 
-Ranking function returns corresponding \code{\link{SocialRankingSolution}} object.
+Ranking function returns corresponding \code{\link{SocialRanking}} object.
 }
 \description{
 Calculate the Kramer-Simpson-like scores.
 Lower scores are better.
 
-\code{\link{kramerSimpsonRanking}} returns the corresponding ranking.
+\code{kramerSimpsonRanking()} returns the corresponding ranking.
 }
 \details{
-\loadmathjax
 Inspired by the Kramer-Simpson method of social choice theory \insertCite{1969Simpson}{socialranking} \insertCite{1975Kramer}{socialranking}, the \emph{Kramer-Simpson-like}
 method compares each element against all other elements using the CP-Majority rule.
 
-For a given element \mjseqn{i} calculate the \code{\link{cpMajorityComparisonScore}}
-against all elements \mjseqn{j}, \mjeqn{d_{ji}(\succeq)}{d_ji(>=)} (notice that \mjseqn{i} and
-\mjseqn{j} are in reverse order).
-\mjeqn{\max_{j \in N \setminus \lbrace i \rbrace}(d_{ji}(\succeq))}{max_{j in N \\ {i}}(d_ji(>=))} then
+For a given element \eqn{i}{i} calculate the \code{\link[=cpMajorityComparisonScore]{cpMajorityComparisonScore()}}
+against all elements \eqn{j}{j}, \eqn{d_{ji}(\succeq)}{d_ji(>=)} (notice that \eqn{i}{i} and
+\eqn{j}{j} are in reverse order).
+\eqn{\max_{j \in N \setminus \lbrace i \rbrace}(d_{ji}(\succeq))}{max_{j in N \\ {i}}(d_ji(>=))} then
 determines the final score, where lower scoring elements are ranked higher.
 }
 \section{Note}{
 
 
-By default this function does not compare \mjeqn{d_{ii}(\succeq)}{d_ii(>=)}. In other terms,
+By default this function does not compare \eqn{d_{ii}(\succeq)}{d_ii(>=)}. In other terms,
 the score of every element is the maximum CP-Majority comparison score against all other elements.
 
 This is slightly different from definitions found in
-\insertCite{2021Manipulability}{socialranking}. Since by definition  \mjeqn{d_{ii}(\succeq) = 0}{d_ii(>=) = 0}
+\insertCite{2021Manipulability}{socialranking}. Since by definition  \eqn{d_{ii}(\succeq) = 0}{d_ii(>=) = 0}
 always holds, the Kramer-Simpson scores in those cases will never be negative, possibly discarding valuable
 information.
 
-For this reason \code{kramerSimpsonScores} and \code{kramerSimpsonRanking} includes a
-\code{compIvsI} parameter that can be set to \code{TRUE} if one wishes for \mjeqn{d_{ii}(\succeq) = 0}{d_ii(>=) = 0}
+For this reason \code{kramerSimpsonScores()} and \code{kramerSimpsonRanking()} includes a
+\code{compIvsI} parameter that can be set to \code{TRUE} if one wishes for \eqn{d_{ii}(\succeq) = 0}{d_ii(>=) = 0}
 to be included in the comparisons. Put into mathematical terms, if:\tabular{ll}{
    \code{compIvsI} \tab Score definition \cr
-   \code{FALSE} \tab \mjeqn{\max_{j \in N \setminus \lbrace i \rbrace}(d_{ji}(\succeq))}{max_{j in N \\ {i}}(d_ji(>=))} \cr
-   \code{TRUE} \tab \mjeqn{\max_{j \in N}(d_{ji}(\succeq))}{max_{j in N}(d_ji(>=))} \cr
+   \code{FALSE} \tab \eqn{\max_{j \in N \setminus \lbrace i \rbrace}(d_{ji}(\succeq))}{max_{j in N \\ {i}}(d_ji(>=))} \cr
+   \code{TRUE} \tab \eqn{\max_{j \in N}(d_{ji}(\succeq))}{max_{j in N}(d_ji(>=))} \cr
 }
 }
 
 \examples{
 # 2 > (1 ~ 3) > 12 > (13 ~ 23) > {} > 123
-pr <- newPowerRelation(
-  2,
-  ">", 1,
-  "~", 3,
-  ">", c(1,2),
-  ">", c(1,3),
-  "~", c(2,3),
-  ">", c(),
-  ">", c(1,2,3)
-)
+pr <- as.PowerRelation("2 > (1~3) > 12 > (13~23) > {} > 123")
 
 # get scores for all elements
 # cpMajorityComparisonScore(pr, 2, 1) = 1
@@ -114,11 +108,12 @@ Other CP-majority based functions:
 \code{\link{copelandScores}()},
 \code{\link{cpMajorityComparison}()}
 
-Other score vector functions: 
+Other ranking solution functions: 
+\code{\link{L1Scores}()},
 \code{\link{copelandScores}()},
 \code{\link{cumulativeScores}()},
 \code{\link{lexcelScores}()},
 \code{\link{ordinalBanzhafScores}()}
 }
 \concept{CP-majority based functions}
-\concept{score vector functions}
+\concept{ranking solution functions}
