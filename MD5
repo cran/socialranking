@@ -1,6 +1,6 @@
-a5b25058f3f6f595153ffa4a09a8d724 *DESCRIPTION
+c407052d583d91cb73738c67f4c81d6b *DESCRIPTION
 eca86076e39e4d7d9322f7ec7d547f23 *NAMESPACE
-cad35b6efac849ee65cd9f92aae7c0fd *NEWS.md
+4001ea631f8fbc4aeba6dbc1266972c9 *NEWS.md
 f6edbdc949ede964f5c43103d31849a7 *R/PowerRelation.R
 6061d356f62fc0774a954bbe0a1ee248 *R/SocialRanking.R
 30416ff1b46f2c8241e2ce0836083c5e *R/appendMissingCoalitions.R
@@ -10,9 +10,9 @@ f6edbdc949ede964f5c43103d31849a7 *R/PowerRelation.R
 50b266a56ba66e7110922d863b7c453c *R/cpmajority.R
 169e2d901c50a5594ec64f4911382b84 *R/createPowerset.R
 d9bdce68175077cd1a0eaef67dc89d57 *R/cumulative.R
-075d276bd1d3c43762c4fef59ec0fd5d *R/docs.R
+3a5b4094a0846638ac25797936da5849 *R/docs.R
 2a46e13993185e56ed0434963761e135 *R/dominance.R
-b2363ac83e0ea487460d50bdec5be3b0 *R/generator.R
+f6670a46d977240fb1aece0db919fe36 *R/generator.R
 d7f9110f05d5fcc4f37878cc79cd509b *R/kramerSimpson.R
 c6c75ba506a395681e7081d30da855ab *R/lexcel.R
 87cfbbcfc8609654b69b7fbe00d8158d *R/lexcel1.R
@@ -21,15 +21,15 @@ db88fd18a3a5af6a3aa2e9a11e18bd3e *R/pipes.R
 57eeb2f2d107ab81d43d0780cc6cde16 *R/relation.R
 c8ca5168824e2c3ea9b666961514ded1 *R/transitiveClosure.R
 1c28616280be68022c684caf605f2f35 *README.md
-e577d0ebf9ede3f3998c87eb949fc230 *build/partial.rdb
-c9fb2202c3ee671389681817f0aad5e4 *build/vignette.rds
+b05466fce03ade209677cdd9dcd1c7a4 *build/partial.rdb
+24e729888e6f4d838484d035f91e4f1a *build/vignette.rds
 13e593af40b9fe4bb30ef451919d4302 *inst/REFERENCES.bib
 c92794290d0928a17039cc43d33619ac *inst/doc/socialranking.R
-269e9b2016defd4a799c57c50999c2d3 *inst/doc/socialranking.Rmd
-860f8827cc49ed7184ea868655361b11 *inst/doc/socialranking.html
+d1d443fc7d712f13ae995a59d2b37779 *inst/doc/socialranking.Rmd
+3a1f19aa1d7b4e1875f6c8c2940eb077 *inst/doc/socialranking.html
 a88d6a73a6ef2d3d3f9069ca47b749fb *inst/doc/socialranking_pdf.R
 293adf84b2fa75d089b640721ccbd5fd *inst/doc/socialranking_pdf.Rmd
-06c8239ccd525c772438e4aaaa47c2f5 *inst/doc/socialranking_pdf.pdf
+9f2452bd774775483267404ee02fe348 *inst/doc/socialranking_pdf.pdf
 ea6a7da2e511dc642541538bd9f02132 *man/L1Scores.Rd
 c738139fb3921f66fa1de6422f255b86 *man/PowerRelation.Rd
 0bbf788cb6f15398d4406be07dfb9e6a *man/SocialRanking.Rd
@@ -44,7 +44,7 @@ d72b42830943a7bfd73c01f2faa93eb9 *man/copelandScores.Rd
 b6b3bd04933012d79e5804365eab7d3b *man/dominates.Rd
 8840a4f5bc680945bd928d0701e82ed4 *man/elementLookup.Rd
 438d07f7955d43f619835e28916cf357 *man/equivalenceClassIndex.Rd
-afd276bd39eabca52d5ea8a122e093e4 *man/generateNextPartition.Rd
+30b04aecd85c0b9b8d4a61714e738c5e *man/generateNextPartition.Rd
 bd4f90182761c8cee5a488473de4756e *man/kramerSimpsonScores.Rd
 197272fcba0a34dfe46fd838a0605465 *man/lexcelScores.Rd
 225c31f0989f295cbed8b610684a4062 *man/makePowerRelationMonotonic.Rd
@@ -53,7 +53,7 @@ dcb4080497dbeccf92a03fbee24fecc3 *man/newPowerRelationFromString.Rd
 47bc4565110b91ccade6c38479b963ee *man/ordinalBanzhafScores.Rd
 4d7930ed0d5f2d6f2ab8cc87bd03d6a0 *man/powerRelationGenerator.Rd
 3e11e30e19f0921b53b3383e77fd1528 *man/powerRelationMatrix.Rd
-fd52b6aaa8c7b8bd7e866bdcb5b015b8 *man/socialrankingpackage.Rd
+87c04c92d0027cfb7b008ed291e32b1c *man/socialrankingpackage.Rd
 f72d37f3978a25de12cfd4698a325185 *man/testRelation.Rd
 1a66812d6611ef5ecdc1118561d0ba85 *man/transitiveClosure.Rd
 2ebcaf5a90cddcba14e3abad498b9d82 *tests/testthat.R
@@ -64,7 +64,7 @@ f72d37f3978a25de12cfd4698a325185 *man/testRelation.Rd
 52fc558b45005eb04ce7d9959a551949 *tests/testthat/test-createPowerset.R
 397cdb57e514ccefbf4542284fcbbb28 *tests/testthat/test-cumulative.R
 00c472e4d6ccfa93449ca58069095057 *tests/testthat/test-dominance.R
-c5e7705ecd9dde69bfa933c6ce14b2be *tests/testthat/test-generator.R
+2f1c47270aa121d9d1f6a2fd912eb78f *tests/testthat/test-generator.R
 aef0afdee2849a7d95517ccdf32d475a *tests/testthat/test-kramerSimpson.R
 7654388f4128f29a857ba1fad4eb24dd *tests/testthat/test-lexcel.R
 7caae22adac533cd39383fa24a2b5ceb *tests/testthat/test-lexcel1.R
@@ -80,7 +80,7 @@ d030f7152f7d91d490756fc111b3440a *vignettes/media/altupanddown.jpg
 eac8017e30fea908c66d3056af610a1b *vignettes/media/altupanddown.png
 6bd8d5ac5f43cb29d36ee7d5ce373c4e *vignettes/preamble.tex
 5fc283eaf6b06d54b4047e2b1b035c0c *vignettes/references.bib
-269e9b2016defd4a799c57c50999c2d3 *vignettes/socialranking.Rmd
+d1d443fc7d712f13ae995a59d2b37779 *vignettes/socialranking.Rmd
 293adf84b2fa75d089b640721ccbd5fd *vignettes/socialranking_pdf.Rmd
 7e052c91dcd79ad62611a4b5cde25ec9 *vignettes/styles.css
 a0ca94ebf29ddf83b21d660312626ec4 *vignettes/tables/functionTable.html

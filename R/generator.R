@@ -118,7 +118,14 @@ powerRelationGenerator <- function(coalitions, startWithLinearOrder = FALSE) {
   partCum <- c(0, cumsum(part))
   permsI <- 0
 
+  done <- FALSE
+
   nextPartition <- function() {
+    if(compI >= ncol(compositions)) {
+      done <<- TRUE
+      return()
+    }
+
     compI <<- compI + 1
     part <<- Filter(function(x) x != 0, compositions[,compI])
     perms <<- partitions::multinomial(part)
@@ -129,10 +136,10 @@ powerRelationGenerator <- function(coalitions, startWithLinearOrder = FALSE) {
 
   function() {
     if(permsI >= ncol(perms)) {
-      if(compI >= ncol(compositions))
-        return(NULL)
-
       nextPartition()
+    }
+    if(done) {
+      return(NULL)
     }
 
     permsI <<- permsI + 1
@@ -199,10 +206,9 @@ powerRelationGenerator <- function(coalitions, startWithLinearOrder = FALSE) {
 #' gen()
 #' # ab > a > b
 #'
-#' # calling it now throws a subscript out of bounds error
-#' if(interactive()) {
-#'   generateNextPartition(gen)
-#' }
+#' # went through all partitions, it will only generate NULL now
+#' gen <- generateNextPartition(gen)
+#' stopifnot(is.null(gen()))
 #'
 #' @export
 generateNextPartition <- function(gen) {
