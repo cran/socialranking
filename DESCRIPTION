@@ -1,6 +1,6 @@
 Package: socialranking
 Title: Social Ranking Solutions for Power Relations on Coalitions
-Version: 1.0.1
+Version: 1.1.0
 Authors@R: c(
  person("Felix", "Fritz", email = "felix.fritz@dauphine.eu", role = c("aut", "cre")),
  person("Jochen", "Staudacher", role = c("aut", "cph", "ths"), email = "jochen.staudacher@hs-kempten.de"),
@@ -20,9 +20,9 @@ VignetteBuilder: knitr
 URL: https://github.com/jassler/socialranking
 BugReports: https://github.com/jassler/socialranking/issues
 NeedsCompilation: no
-Packaged: 2023-08-23 15:40:29 UTC; felix
+Packaged: 2023-11-29 12:38:13 UTC; felix
 Author: Felix Fritz [aut, cre],
   Jochen Staudacher [aut, cph, ths],
   Moretti Stefano [aut, cph, ths]
 Repository: CRAN
-Date/Publication: 2023-08-23 16:00:02 UTC
+Date/Publication: 2023-11-29 12:50:02 UTC

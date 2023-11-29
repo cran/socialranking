@@ -375,18 +375,9 @@ copelandRanking(pr)
 
 ## -----------------------------------------------------------------------------
 pr <- as.PowerRelation("(abc ~ ab ~ c ~ a) > (b ~ bc) > ac")
-unlist(kramerSimpsonScores(pr))
+kramerSimpsonScores(pr)
 
 kramerSimpsonRanking(pr)
-
-## -----------------------------------------------------------------------------
-pr <- as.PowerRelation("b > (a ~ c) > ab > (ac ~ bc) > {} > abc")
-kramerSimpsonRanking(pr)
-
-# notice how b's score is negative
-unlist(kramerSimpsonScores(pr))
-
-kramerSimpsonScores(pr, elements = "b", compIvsI = TRUE)
 
 ## -----------------------------------------------------------------------------
 pr <- as.PowerRelation("12 > (123 ~ 23 ~ 3) > (1 ~ 2) > 13")
@@ -435,6 +426,29 @@ dualLexScores['1'] > dualLexScores['3']
 lexcelRanking(pr)
 
 dualLexcelRanking(pr)
+
+## -----------------------------------------------------------------------------
+pr <- as.PowerRelation('(12 ~ 1 ~ 23) > 123 > {} > (13 ~ 2 ~ 3)')
+L1Scores(pr)
+
+## -----------------------------------------------------------------------------
+L1Ranking(pr)
+
+## -----------------------------------------------------------------------------
+L2Ranking(pr)
+pr2 <- as.PowerRelation('1 ~ 23 ~ 24 ~ 234')
+pr2 <- appendMissingCoalitions(pr2)
+L1Ranking(pr)
+L2Ranking(pr)
+
+## -----------------------------------------------------------------------------
+LPScores(pr)
+LPRanking(pr)
+
+## -----------------------------------------------------------------------------
+L1Scores(pr)
+LPSScores(pr)
+LPSRanking(pr)
 
 ## -----------------------------------------------------------------------------
 pr <- as.PowerRelation("ab > a > {} > b")

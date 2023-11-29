@@ -76,6 +76,9 @@ stopifnot(all(d1, d2, !d3))
 \seealso{
 Other ranking solution functions: 
 \code{\link{L1Scores}()},
+\code{\link{L2Scores}()},
+\code{\link{LPSScores}()},
+\code{\link{LPScores}()},
 \code{\link{copelandScores}()},
 \code{\link{kramerSimpsonScores}()},
 \code{\link{lexcelScores}()},
