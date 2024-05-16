@@ -93,7 +93,7 @@ as.PowerRelation(list(c(1,2), 1, c(), 2))
 
 as.PowerRelation(list(c(1,2), 1, c(), 2), comparators = c(">", "~", ">"))
 
-## ---- echo=FALSE, results='asis'----------------------------------------------
+## ----echo=FALSE, results='asis'-----------------------------------------------
 xfun::file_string("tables/functionTable.tex")
 
 ## -----------------------------------------------------------------------------
@@ -150,7 +150,7 @@ class(prLong)
 class(pr) <- class(pr)[-which(class(pr) == "SingleCharElements")]
 pr
 
-## ---- echo=FALSE, results='asis'----------------------------------------------
+## ----echo=FALSE, results='asis'-----------------------------------------------
 xfun::file_string('tables/prObject.tex')
 
 ## -----------------------------------------------------------------------------
@@ -223,6 +223,16 @@ as.PowerRelation(ps)
 PowerRelation(list(ps))
 
 as.PowerRelation(createPowerset(letters[1:4]))
+
+## -----------------------------------------------------------------------------
+set.seed(1)
+coalitions <- createPowerset(1:3)
+generateRandomPowerRelation(coalitions)
+generateRandomPowerRelation(coalitions)
+
+generateRandomPowerRelation(coalitions, linearOrder = TRUE)
+generateRandomPowerRelation(coalitions, monotonic = TRUE)
+generateRandomPowerRelation(coalitions, linearOrder = TRUE, monotonic = TRUE)
 
 ## -----------------------------------------------------------------------------
 coalitions <- list(c(1,2), 1, 2)
@@ -415,8 +425,8 @@ lexScores['1'] > lexScores['3']
 
 # turn Lexcel score into Dual Lexcel score
 dualLexScores <- structure(
-  lapply(lexcelScores(pr), function(r) -rev(r)),
-  class = 'LexcelScores'
+  lexScores,
+  class = 'DualLexcelScores'
 )
 
 # now 1 scores lower than 3
@@ -438,8 +448,8 @@ L1Ranking(pr)
 L2Ranking(pr)
 pr2 <- as.PowerRelation('1 ~ 23 ~ 24 ~ 234')
 pr2 <- appendMissingCoalitions(pr2)
-L1Ranking(pr)
-L2Ranking(pr)
+L1Ranking(pr2)
+L2Ranking(pr2)
 
 ## -----------------------------------------------------------------------------
 LPScores(pr)
